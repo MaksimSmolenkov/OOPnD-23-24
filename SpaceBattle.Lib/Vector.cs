@@ -1,4 +1,4 @@
-namespace _Vector;
+﻿namespace vectr;
 public class Vector
 {
     private readonly int[] _values;
