@@ -1,19 +1,21 @@
 ﻿using Command;
 using Movable;
 
-namespace Spacebattle;
-
-public class MoveCommand : ICommand
+namespace Spacebattle
 {
-    private readonly IMovable movable;
 
-    public MoveCommand(IMovable movable)
+    public class MoveCommand : ICommand
     {
-        this.movable = movable;
-    }
+        private readonly IMovable movable;
 
-    public void Execute()
-    {
-        movable.Location += movable.Velosity;
+        public MoveCommand(IMovable movable)
+        {
+            this.movable = movable;
+        }
+
+        public void Execute()
+        {
+            movable.Location += movable.Velosity;
+        }
     }
 }

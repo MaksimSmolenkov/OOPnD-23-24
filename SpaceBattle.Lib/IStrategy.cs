@@ -1,4 +1,4 @@
-namespace Spacebattle
+﻿namespace Spacebattle
 {
     public interface IStrategy
     {

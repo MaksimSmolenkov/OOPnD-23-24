@@ -1,6 +1,6 @@
-using Command;
+﻿using Command;
 
-namespace SpaceBattle;
+namespace Spacebattle;
 
 public class MacroCommand : ICommand
 {
