@@ -1,4 +1,4 @@
-using Command;
+﻿using Command;
 
 namespace SpaceBattle;
 
