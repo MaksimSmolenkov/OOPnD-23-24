@@ -1,5 +1,5 @@
 ﻿using Hwdtech;
-namespace SpaceBattle;
+namespace Spacebattle;
 
 public class StartMoveCommand : ICommand
 {

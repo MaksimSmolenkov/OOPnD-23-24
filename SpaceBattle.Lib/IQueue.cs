@@ -1,6 +1,6 @@
 ﻿using Command;
 
-namespace SpaceBattle;
+namespace Spacebattle;
 
 public interface IQueue
 {

@@ -1,4 +1,4 @@
-﻿namespace SpaceBattle;
+﻿namespace Spacebattle;
 
 public interface IUObject
 {
