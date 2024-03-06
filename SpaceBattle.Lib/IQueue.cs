@@ -4,6 +4,6 @@ namespace SpaceBattle;
 
 public interface IQueue
 {
-    void Add(Hwdtech.ICommand cmd);  
-    ICommand Take();                 
+    void Add(Hwdtech.ICommand cmd);
+    ICommand Take();
 }
