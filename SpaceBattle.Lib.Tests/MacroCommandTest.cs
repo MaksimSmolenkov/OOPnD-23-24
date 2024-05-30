@@ -25,7 +25,7 @@ public class MacroCommandsTest
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Second", (object[] p) => propertyMock.Object.Strategy(p)).Execute();
     }
 
-     [Fact]
+    [Fact]
     public static void TestMacroCommand()
     {
         var obj = new Mock<Command.ICommand>();
