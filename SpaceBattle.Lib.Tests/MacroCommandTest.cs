@@ -25,8 +25,21 @@ public class MacroCommandsTest
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Second", (object[] p) => propertyMock.Object.Strategy(p)).Execute();
     }
 
+     [Fact]
+    public static void TestMacroCommand()
+    {
+        var obj = new Mock<Command.ICommand>();
+        obj.Setup(m => m.Execute()).Verifiable();
+
+        var commands = new List<Command.ICommand> { obj.Object };
+        var macroCommand = new MacroCommand(commands);
+
+        macroCommand.Execute();
+        obj.Verify();
+    }
+
     [Fact]
-    public void TestPositiveMacroCommand()
+    public void TestMacroCommandStrategu()
     {
         var obj = new Mock<IUObject>();
         var newmc = new MacroCommandStrategy();
@@ -34,5 +47,6 @@ public class MacroCommandsTest
         var macrocommand = (Command.ICommand)newmc.Strategy("First", obj.Object);
 
         macrocommand.Execute();
+        Assert.NotNull(macrocommand);
     }
 }
