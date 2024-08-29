@@ -6,9 +6,14 @@ public class ServerThread
 {
     private readonly BlockingCollection<ICommand> _q;
     private Action _behaviour;
+    public bool IsAlive => _t.IsAlive;
 
     private readonly Thread _t;
     private bool _stop = false;
+    public void Join()
+    {
+        _t.Join();
+    }
 
     public ServerThread(BlockingCollection<ICommand> q)
     {
@@ -53,30 +58,17 @@ public class ServerThread
     }
     public override bool Equals(object? obj)
     {
-        if (obj == null || GetType() != obj.GetType())
+        if (obj is Thread thread)
         {
-            return false;
-        }
-
-        if (obj.GetType() == typeof(Thread))
-        {
-            return _t == (Thread)obj;
+            return _t == thread;
         }
 
         return false;
     }
 
-    public override int GetHashCode()
+   public override int GetHashCode()
     {
-        try
-        {
-            return base.GetHashCode();
-        }
-        catch (System.NotImplementedException e)
-        {
-            Console.WriteLine("Ошибка: {0}", e.Message);
-            throw new System.NotImplementedException();
-        }
+        return _t.GetHashCode();
     }
 
     public class HardStopCommand : ICommand
@@ -93,7 +85,7 @@ public class ServerThread
             {
                 _st.Stop();
             }
-
+            
             else
             {
                 throw new Exception("Wrong Thread");
