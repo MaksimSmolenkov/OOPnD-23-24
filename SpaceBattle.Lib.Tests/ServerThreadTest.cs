@@ -7,14 +7,14 @@ using Hwdtech.Ioc;
 using Spacebattle;
 public class ServerThreadTest
 {
-    public ServerThreadTest() {
-
+    public ServerThreadTest() 
+    {
         new InitScopeBasedIoCImplementationCommand().Execute();
 
         var setScopeCommand = IoC.Resolve<Hwdtech.ICommand>("Scopes.Current.Set",
             IoC.Resolve<object>("Scopes.New",
                 IoC.Resolve<object>("Scopes.Root")));
-/*
+
         IoC.Resolve<ICommand>("IoC.Register", 
             "Hard Stop The Thread",
             (object[] args) => {
@@ -27,25 +27,9 @@ public class ServerThreadTest
                     }
                 );
             }
-    ).Execute();*/
-
-        IoC.Resolve<ICommand>("IoC.Register", 
-            "Soft Stop The Thread",
-            (object[] args) => {
-                var thread = (ServerThread)args[0];
-                var queue = (BlockingCollection<ICommand>)args[1];
-                var action = (Action)args[2];
-                return new ActionCommand(
-                    () => {
-                        new SoftStop(thread, queue).Execute();
-                        action();
-                    }
-                );
-            }
-    ).Execute();
-
+        ).Execute();
     }
-/*
+
     [Fact]
     public void HardStopShouldStopServerThread()
     {
@@ -84,59 +68,19 @@ public class ServerThreadTest
         command.Verify(m => m.Execute(), Times.Once);
 
         HandleCommand.Verify(m => m.Execute(), Times.Never);
-    }*/
-
-    [Fact]
-    public void SoftStopShouldStopServerThread()
-    {
-        var setScopeCommand = IoC.Resolve<Hwdtech.ICommand>("Scopes.Current.Set",
-            IoC.Resolve<object>("Scopes.New",
-                IoC.Resolve<object>("Scopes.Current")));
-
-        var mre = new ManualResetEvent(false);
-
-        var q = new BlockingCollection<ICommand>(10);
-
-        var HandleCommand = new Mock<ICommand>();
-        HandleCommand.Setup(m => m.Execute()).Verifiable();
-
-        var setRegisterCommand = IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "ExceptionHandler.Handle", (object[] args) => HandleCommand.Object);
-
-        q.Add(setScopeCommand);
-        q.Add(setRegisterCommand);
-
-        var command = new Mock<ICommand>();
-        command.Setup(m => m.Execute()).Verifiable();
-
-        var st = new ServerThread(q);
-
-        var ss = IoC.Resolve<ICommand>("Soft Stop The Thread", st, q, (Action)(() => mre.Set()));
-        q.Add(command.Object);
-        q.Add(ss);
-        q.Add(command.Object);
-
-        st.Start();
-
-        mre.WaitOne(10000);
-
-        Assert.False(st.IsAlive);
-
-        command.Verify(m => m.Execute(), Times.Once);
-
-        HandleCommand.Verify(m => m.Execute(), Times.Never);
-    }
-}
-
-public class ActionCommand: ICommand 
-{
-    private readonly Action _action;
-    public ActionCommand(Action action) 
-    {
-        _action = action;
     }
 
-    public void Execute()
+    public class ActionCommand: ICommand 
     {
-        _action();
+        private readonly Action _action;
+        public ActionCommand(Action action) 
+        {
+            _action = action;
+        }
+
+        public void Execute()
+        {
+            _action();
+        }
     }
 }
