@@ -39,11 +39,6 @@ namespace SpaceBattle.Lib
 
         public void Execute()
         {
-            if (string.IsNullOrEmpty(_shooter.ProjectileType))
-            {
-                throw new InvalidOperationException("Отсутствует тип снаряда.");
-            }
-
             var projectile = _projectileFactory.Invoke(_shooter.ProjectileType);
 
             _projectileConfigurator.Invoke(projectile, _shooter);
