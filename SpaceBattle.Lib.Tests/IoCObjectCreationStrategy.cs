@@ -63,6 +63,20 @@ namespace SpaceBattle.Lib.Test
             );
             Assert.Contains("Cannot instantiate", ex.InnerException?.Message);
         }
+
+        [Fact]
+        public void IoCObjectCreationStrategy_ThrowsException_WhenNoPublicConstructor()
+        {
+            var strategy = new IoCObjectCreationStrategy("CreateClassWithoutConstructor", typeof(ClassWithoutConstructor));
+
+            strategy.Execute();
+
+            var ex = Assert.Throws<InvalidOperationException>(() =>
+                IoC.Resolve<object>("CreateClassWithoutConstructor", Array.Empty<object>())
+            );
+
+            Assert.Contains("No public constructor found for ClassWithoutConstructor", ex.Message);
+        }
     }
 
     public class MyClass
