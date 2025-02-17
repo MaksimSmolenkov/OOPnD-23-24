@@ -78,29 +78,4 @@ namespace SpaceBattle.Lib.Test
             Assert.Contains("No public constructor found for ClassWithoutConstructor", ex.Message);
         }
     }
-
-    public class MyClass
-    {
-        public IDependency Dependency { get; }
-
-        public MyClass(IDependency dependency)
-        {
-            Dependency = dependency ?? throw new ArgumentNullException(nameof(dependency));
-        }
-    }
-
-    public class ClassWithoutConstructor
-    {
-        private ClassWithoutConstructor() { }
-    }
-
-    public class FaultyClass
-    {
-        public FaultyClass() => throw new Exception("Cannot instantiate");
-    }
-
-    public interface IDependency
-    {
-        string DoWork();
-    }
 }
