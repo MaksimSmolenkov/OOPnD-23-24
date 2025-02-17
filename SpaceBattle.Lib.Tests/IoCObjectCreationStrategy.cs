@@ -77,7 +77,7 @@ namespace SpaceBattle.Lib.Test
 
     public class ClassWithoutConstructor
     {
-        private ClassWithoutConstructor() { } 
+        private ClassWithoutConstructor() { }
     }
 
     public class FaultyClass
