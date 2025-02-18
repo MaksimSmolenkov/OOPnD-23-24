@@ -14,11 +14,12 @@ namespace SpaceBattle.Lib.Test
         }
 
         [Fact]
-        public void ShootCommand_CreatesProjectileWithCorrectProperties()
+        public void ShootCommand_CreatesProjectileWithCorrectProperties_AndStartsMovement()
         {
             var shooterMock = new Mock<IShootable>();
             var gameFieldMock = new Mock<IUObject>();
             var projectileMock = new Mock<IUObject>();
+            var moveCommandMock = new Mock<Command.ICommand>();
 
             var projectileType = "Torpedo";
 
@@ -41,6 +42,8 @@ namespace SpaceBattle.Lib.Test
             IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "ShootCommand.ProjectileFactory", (object[] args) => projectileFactory).Execute();
             IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "ShootCommand.ProjectileConfigurator", (object[] args) => projectileConfigurator).Execute();
 
+            IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "StartMove", (object[] args) => moveCommandMock.Object).Execute();
+
             var shootCommand = new ShootCommand(
                 shooterMock.Object,
                 gameFieldMock.Object,
@@ -52,8 +55,9 @@ namespace SpaceBattle.Lib.Test
 
             projectileMock.Verify(p => p.SetProperty("Location", It.IsAny<object>()), Times.Once);
             projectileMock.Verify(p => p.SetProperty("Velocity", It.IsAny<object>()), Times.Once);
-
             gameFieldMock.Verify(g => g.SetProperty("Projectiles", It.IsAny<object>()), Times.Once);
+
+            moveCommandMock.Verify(m => m.Execute(), Times.Once);
         }
     }
 }

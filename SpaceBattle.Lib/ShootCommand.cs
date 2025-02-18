@@ -1,9 +1,9 @@
-﻿using Command;
+﻿using Hwdtech;
 using Spacebattle;
 
 namespace SpaceBattle.Lib
 {
-    public class AddProjectileToFieldCommand : ICommand
+    public class AddProjectileToFieldCommand : Command.ICommand
     {
         private readonly IUObject _gameField;
         private readonly IUObject _projectile;
@@ -22,7 +22,7 @@ namespace SpaceBattle.Lib
         }
     }
 
-    public class ShootCommand : ICommand
+    public class ShootCommand : Command.ICommand
     {
         private readonly IShootable _shooter;
         private readonly IUObject _gameField;
@@ -44,6 +44,8 @@ namespace SpaceBattle.Lib
             _projectileConfigurator.Invoke(projectile, _shooter);
 
             new AddProjectileToFieldCommand(_gameField, projectile).Execute();
+            var startMoveCommand = IoC.Resolve<Command.ICommand>("StartMove", projectile);
+            startMoveCommand.Execute();
         }
     }
 }
