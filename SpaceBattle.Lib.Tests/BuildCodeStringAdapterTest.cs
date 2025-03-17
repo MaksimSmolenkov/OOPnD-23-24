@@ -1,60 +1,28 @@
-﻿using Hwdtech;
-using Hwdtech.Ioc;
+﻿using Moq;
 using Movable;
+using vectr;
 
-namespace SpaceBattle.Lib.Test;
-
-public class BuildCodeStringAdapterTests
+namespace SpaceBattle.Lib.Test
 {
-    [Fact]
-    public void BuildString()
+    public class BuildCodeStringAdapterTests
     {
-        new InitScopeBasedIoCImplementationCommand().Execute();
-        IoC.Resolve<Hwdtech.ICommand>("Scopes.Current.Set", IoC.Resolve<object>("Scopes.New", IoC.Resolve<object>("Scopes.Root"))).Execute();
-        var type = typeof(IMovable);
-        var builder = new CodeStringAdapterBuilder(className: "MovableAdapter");
-        type.GetProperties().ToList().ForEach((property) => builder.AddMember(new
+        [Fact]
+        public void BuildString_Test()
         {
-            name = property.Name,
-            type = property.PropertyType.Name,
-            get = property.CanRead,
-            set = property.CanWrite
-        }));
-        var t = @"using System;
-public class {{name }}
-{
-    private object obj;
-    {{ for property in properties }}
-    private {{ property.type }} {{ property.name }}{
-    {{if property.set}}
-    set
-    {
-        Hwdtech.IoC.Resolve<SpaceBattle.Lib.ICommand>(""{{property.name}}.Set"", obj, value).Execute();
-    }
-    {{end}}  
-    get
-    {{if property.get}}
-    {
-        return Hwdtech.IoC.Resolve<{{property.type}}>(""{{property.name}}.Get"", obj);
-    } 
-    {{ end }}
-    }
-    {{ end }}
-    public {{ name }}(object obj)
-    {
-        this.obj = obj;
-    }
-}";
-        var valid = @"using System;
+            var builder = new CodeStringAdapterBuilder("MovableAdapter");
+            builder.AddMember(new { name = "Location", type = "Vector", get = true, set = true })
+                   .AddMember(new { name = "Velosity", type = "Vector", get = true, set = false });
+
+            var valid = @"using System;
 public class MovableAdapter
 {
     private object obj;
     
-        private Vector Location{
+        public Vector Location{
         
         set
         {
-            Hwdtech.IoC.Resolve<SpaceBattle.Lib.ICommand>(""Location.Set"", obj, value).Execute();
+            Hwdtech.IoC.Resolve<Command.ICommand>(""Location.Set"", obj, value).Execute();
         }
           
         get
@@ -65,7 +33,7 @@ public class MovableAdapter
         
         }
         
-        private Vector Velosity{
+        public Vector Velosity{
           
         get
         
@@ -79,9 +47,39 @@ public class MovableAdapter
     {
         this.obj = obj;
     }
-}";
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Template", (object[] par) => t).Execute();
-        var result = builder.Build();
-        Assert.Equal(valid, result);
+}
+return typeof(MovableAdapter);";
+
+            var result = builder.Build();
+            Assert.Equal(valid, result);
+
+        }
+        [Fact]
+        public void BuildString_CreateMock_AndCheckProperties()
+        {
+            var builder = new CodeStringAdapterBuilder("MovableAdapter");
+            builder.AddMember(new { name = "Location", type = "Vector", get = true, set = true })
+                   .AddMember(new { name = "Velocity", type = "Vector", get = true, set = false });
+
+            var generatedCode = builder.Build();
+
+            var mockAdapter = new Mock<IMovable>();
+
+            var location = new Vector(1, 2);
+            var velocity = new Vector(3, 4);
+
+            mockAdapter.SetupProperty(a => a.Location, location);
+            mockAdapter.SetupGet(a => a.Location).Returns(location);
+
+            mockAdapter.SetupGet(a => a.Velosity).Returns(velocity);
+
+            var adapterInstance = mockAdapter.Object;
+
+            Assert.Equal(location, adapterInstance.Location);
+            Assert.Equal(velocity, adapterInstance.Velosity);
+
+            mockAdapter.VerifyGet(a => a.Location, Times.Once);
+            mockAdapter.VerifyGet(a => a.Velosity, Times.Once);
+        }
     }
 }
