@@ -9,11 +9,11 @@ public class {{name }}
 {
     private object obj;
     {{ for property in properties }}
-    private {{ property.type }} {{ property.name }}{
+    public {{ property.type }} {{ property.name }}{
     {{if property.set}}
     set
     {
-        Hwdtech.IoC.Resolve<SpaceBattle.Lib.ICommand>(""{{property.name}}.Set"", obj, value).Execute();
+        Hwdtech.IoC.Resolve<Command.ICommand>(""{{property.name}}.Set"", obj, value).Execute();
     }
     {{end}}  
     get
@@ -28,7 +28,8 @@ public class {{name }}
     {
         this.obj = obj;
     }
-}";
+}
+return typeof({{name}});";
 
     private readonly string _className;
     private readonly List<object> _members;
