@@ -13,7 +13,7 @@ namespace SpaceBattle.Lib.Test
             builder.AddMember(new { name = "Location", type = "Vector", get = true, set = true })
                    .AddMember(new { name = "Velosity", type = "Vector", get = true, set = false });
 
-        var valid = @"using System;
+            var valid = @"using System;
 public class MovableAdapter
 {
     private object obj;
@@ -50,10 +50,10 @@ public class MovableAdapter
 }
 return typeof(MovableAdapter);";
 
-        var result = builder.Build();
-        Assert.Equal(valid, result);
+            var result = builder.Build();
+            Assert.Equal(valid, result);
 
-    }
+        }
         [Fact]
         public void BuildString_CreateMock_AndCheckProperties()
         {
