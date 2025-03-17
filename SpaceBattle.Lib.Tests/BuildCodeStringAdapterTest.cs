@@ -11,7 +11,7 @@ namespace SpaceBattle.Lib.Test
         {
             var builder = new CodeStringAdapterBuilder("MovableAdapter");
             builder.AddMember(new { name = "Location", type = "Vector", get = true, set = true })
-                   .AddMember(new { name = "Velocity", type = "Vector", get = true, set = false });
+                   .AddMember(new { name = "Velosity", type = "Vector", get = true, set = false });
 
         var valid = @"using System;
 public class MovableAdapter
@@ -54,7 +54,7 @@ return typeof(MovableAdapter);";
         Assert.Equal(valid, result);
 
     }
-         [Fact]
+        [Fact]
         public void BuildString_CreateMock_AndCheckProperties()
         {
             var builder = new CodeStringAdapterBuilder("MovableAdapter");
